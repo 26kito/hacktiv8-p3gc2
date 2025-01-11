@@ -24,18 +24,18 @@ func NewRouter() *echo.Echo {
 	userGrpcClient := pb.NewUserServiceClient(userConnection)
 
 	e.POST("/users", func(c echo.Context) error {
-		var user entity.UserInput
+		var payload entity.UserInput
 
-		if err := c.Bind(&user); err != nil {
+		if err := c.Bind(&payload); err != nil {
 			return c.JSON(http.StatusBadRequest, err)
 		}
 
-		userPB := &pb.CreateUserRequest{
-			Username: user.Username,
-			Password: user.Password,
+		userPB := &pb.RegisterUserRequest{
+			Username: payload.Username,
+			Password: payload.Password,
 		}
 
-		_, err := userGrpcClient.CreateUser(c.Request().Context(), userPB)
+		_, err := userGrpcClient.RegisterUser(c.Request().Context(), userPB)
 
 		if err != nil {
 			st, ok := status.FromError(err)
@@ -56,6 +56,35 @@ func NewRouter() *echo.Echo {
 		return c.JSON(http.StatusCreated, entity.ResponseOK{
 			Message: "User created successfully",
 			Data:    nil,
+		})
+	})
+
+	e.GET("/users/:id", func(c echo.Context) error {
+		userID := c.Param("id")
+
+		userPB := &pb.GetUserByIdRequest{Id: userID}
+
+		res, err := userGrpcClient.GetUserById(c.Request().Context(), userPB)
+
+		if err != nil {
+			st, ok := status.FromError(err)
+
+			errMessage := st.Message()
+
+			if !ok {
+				return c.JSON(http.StatusBadRequest, entity.ResponseError{
+					Message: errMessage,
+				})
+			}
+
+			return c.JSON(http.StatusBadRequest, entity.ResponseError{
+				Message: errMessage,
+			})
+		}
+
+		return c.JSON(http.StatusOK, entity.ResponseOK{
+			Message: "User found",
+			Data:    res,
 		})
 	})
 

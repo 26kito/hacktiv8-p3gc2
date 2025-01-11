@@ -19,7 +19,7 @@ func NewUserService(userRepository repository.UserRepository) *UserService {
 	return &UserService{UserRepository: userRepository}
 }
 
-func (us *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+func (us *UserService) RegisterUser(ctx context.Context, req *pb.RegisterUserRequest) (*pb.RegisterUserResponse, error) {
 	payload := entity.UserInput{
 		Username: req.Username,
 		Password: req.Password,
@@ -29,14 +29,29 @@ func (us *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest
 		return nil, status.Error(400, err.Error())
 	}
 
-	res, err := us.UserRepository.CreateUser(payload)
+	res, err := us.UserRepository.RegisterUser(payload)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &pb.CreateUserResponse{
+	return &pb.RegisterUserResponse{
 		Id: res.ID.Hex(),
+	}, nil
+}
+
+func (us *UserService) GetUserById(ctx context.Context, req *pb.GetUserByIdRequest) (*pb.GetUserByIdResponse, error) {
+	userID := req.Id
+
+	res, err := us.UserRepository.GetUserById(userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.GetUserByIdResponse{
+		Id:       res.ID.Hex(),
+		Username: res.Username,
 	}, nil
 }
 
@@ -45,8 +60,16 @@ func validateRegisterPayload(payload entity.UserInput) error {
 		return fmt.Errorf("username is required")
 	}
 
+	if len(payload.Username) < 5 || len(payload.Username) > 15 {
+		return fmt.Errorf("username must be between 5 and 15 characters")
+	}
+
 	if payload.Password == "" {
 		return fmt.Errorf("password is required")
+	}
+
+	if len(payload.Password) < 8 {
+		return fmt.Errorf("password must be at least 8 characters")
 	}
 
 	return nil

@@ -4,23 +4,28 @@ package user;
 option go_package = "./proto";
 
 service UserService {
-    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
-    rpc GetUser(GetUserRequest) returns (GetUserResponse);
+    rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
+    rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse);
 }
 
-message CreateUserRequest {
+message RegisterUserRequest {
     string username = 1;
     string password = 2;
 }
 
-message CreateUserResponse {
+message RegisterUserResponse {
     string id = 1;
 }
 
-message GetUserRequest {
+message CreateUserError {
+    string message = 1;
+}
+
+message GetUserByIdRequest {
     string id = 1;
 }
 
-message GetUserResponse {
-    string username = 1;
+message GetUserByIdResponse {
+    string id = 1;
+    string username = 2;
 }
