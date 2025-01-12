@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package bookservice;
+option go_package = "./proto";
+
+service BookService {
+    rpc InsertBook(InsertBookRequest) returns (GetBookResponse);
+    rpc GetAllBook(Empty) returns (GetAllBookResponse);
+}
+
+message Book {
+    string id = 1;
+    string title = 2;
+    string author = 3;
+    string published_date = 4;
+    string status = 5;
+}
+
+message GetAllBookResponse {
+    repeated Book books = 1;
+}
+
+message GetBookRequest {
+    string id = 1;
+}
+
+message GetBookResponse {
+    Book book = 1;
+}
+
+message InsertBookRequest {
+    string title = 1;
+    string author = 2;
+    string published_date = 3;
+    string status = 4;
+}
+
+message InsertBookResponse {
+    string id = 1;
+}
+
+message Empty {}
