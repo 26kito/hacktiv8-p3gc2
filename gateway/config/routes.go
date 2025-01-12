@@ -24,6 +24,7 @@ func NewRouter() *echo.Echo {
 	e.POST("/users", userController.Register)
 	e.POST("/users/login", userController.Login)
 	e.GET("/users/:id", userController.GetUserById)
+	e.PUT("/users/:id", userController.UpdateUser)
 
 	return e
 }

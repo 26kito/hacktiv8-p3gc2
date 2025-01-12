@@ -113,3 +113,37 @@ func (s *Service) Login(c echo.Context) error {
 		Data:    res,
 	})
 }
+
+func (s *Service) UpdateUser(c echo.Context) error {
+	var payload entity.UpdateUserPayload
+	token := c.Request().Header.Get("Authorization")
+
+	if err := c.Bind(&payload); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	userPB := &pb.UpdateUserRequest{
+		Id:       c.Param("id"),
+		Password: payload.Password,
+	}
+
+	md := metadata.Pairs("authorization", token)
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
+
+	res, err := s.UserClient.UpdateUser(ctx, userPB)
+
+	if err != nil {
+		st, _ := status.FromError(err)
+
+		errMessage := st.Message()
+
+		return c.JSON(http.StatusBadRequest, entity.ResponseError{
+			Message: errMessage,
+		})
+	}
+
+	return c.JSON(http.StatusOK, entity.ResponseOK{
+		Message: "User updated",
+		Data:    res,
+	})
+}

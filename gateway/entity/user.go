@@ -12,3 +12,7 @@ type UserInput struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
+type UpdateUserPayload struct {
+	Password string `json:"password"`
+}

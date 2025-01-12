@@ -7,7 +7,7 @@ service UserService {
     rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
     rpc LoginUser(LoginUserRequest) returns (UserResponse);
     rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse);
-    rpc UpdateUser(UpdateUserRequest) returns (User);
+    rpc UpdateUser(UpdateUserRequest) returns (GetUserByIdResponse);
 }
 
 message User {
@@ -46,6 +46,6 @@ message GetUserByIdResponse {
 }
 
 message UpdateUserRequest {
-    string username = 1;
+    string id = 1;
     string password = 2;
 }
