@@ -3,10 +3,14 @@ package service
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
+	"time"
 	"userservice/entity"
 	pb "userservice/proto"
 	"userservice/repository"
 
+	"github.com/golang-jwt/jwt/v5"
 	"google.golang.org/grpc/status"
 )
 
@@ -37,6 +41,29 @@ func (us *UserService) RegisterUser(ctx context.Context, req *pb.RegisterUserReq
 
 	return &pb.RegisterUserResponse{
 		Id: res.ID.Hex(),
+	}, nil
+}
+
+func (us *UserService) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (*pb.UserResponse, error) {
+	username := req.Username
+	password := req.Password
+
+	res, err := us.UserRepository.LoginUser(username, password)
+
+	if err != nil {
+		return nil, err
+	}
+
+	tokenString, err := generateJWTToken(res)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.UserResponse{
+		Id:       res.ID.Hex(),
+		Username: res.Username,
+		Token:    tokenString,
 	}, nil
 }
 
@@ -73,4 +100,21 @@ func validateRegisterPayload(payload entity.UserInput) error {
 	}
 
 	return nil
+}
+
+func generateJWTToken(user *entity.User) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id":  user.ID.Hex(),
+		"username": user.Username,
+		"exp":      time.Now().Add(time.Hour * 1).Unix(),
+	})
+
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
+
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+
+	return tokenString, nil
 }

@@ -12,6 +12,7 @@ import (
 
 type UserRepository interface {
 	RegisterUser(payload entity.UserInput) (*entity.User, error)
+	LoginUser(username, password string) (*entity.User, error)
 	GetUserById(userID string) (*entity.User, error)
 }
 
@@ -37,6 +38,24 @@ func (ur *userRepository) RegisterUser(payload entity.UserInput) (*entity.User, 
 	}
 
 	_, err = ur.collection.InsertOne(context.Background(), user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (ur *userRepository) LoginUser(username, password string) (*entity.User, error) {
+	var user entity.User
+
+	err := ur.collection.FindOne(context.Background(), bson.M{"username": username}).Decode(&user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil {
 		return nil, err
