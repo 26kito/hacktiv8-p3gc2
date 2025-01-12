@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 	"time"
 	"userservice/entity"
@@ -114,7 +113,7 @@ func generateJWTToken(user *entity.User) (string, error) {
 		"exp":      time.Now().Add(time.Hour * 1).Unix(),
 	})
 
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
+	tokenString, err := token.SignedString([]byte("hacktiv8p3gc2"))
 
 	if err != nil {
 		log.Println(err)

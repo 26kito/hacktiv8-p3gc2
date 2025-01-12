@@ -1,11 +1,13 @@
 package service
 
 import (
+	"context"
 	"gateway/entity"
 	pb "gateway/proto"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
 
@@ -51,21 +53,19 @@ func (s *Service) Register(c echo.Context) error {
 
 func (s *Service) GetUserById(c echo.Context) error {
 	userID := c.Param("id")
+	token := c.Request().Header.Get("Authorization")
 
 	userPB := &pb.GetUserByIdRequest{Id: userID}
 
-	res, err := s.UserClient.GetUserById(c.Request().Context(), userPB)
+	md := metadata.Pairs("authorization", token)
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
+
+	res, err := s.UserClient.GetUserById(ctx, userPB)
 
 	if err != nil {
-		st, ok := status.FromError(err)
+		st, _ := status.FromError(err)
 
 		errMessage := st.Message()
-
-		if !ok {
-			return c.JSON(http.StatusBadRequest, entity.ResponseError{
-				Message: errMessage,
-			})
-		}
 
 		return c.JSON(http.StatusBadRequest, entity.ResponseError{
 			Message: errMessage,
