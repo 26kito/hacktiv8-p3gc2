@@ -98,6 +98,20 @@ func (us *UserService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest
 	}, nil
 }
 
+func (us *UserService) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
+	userID := req.Id
+
+	err := us.UserRepository.DeleteUser(userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.DeleteUserResponse{
+		Message: "User deleted",
+	}, nil
+}
+
 func validateRegisterPayload(payload entity.UserInput) error {
 	if payload.Username == "" {
 		return fmt.Errorf("username is required")

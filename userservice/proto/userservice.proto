@@ -8,6 +8,7 @@ service UserService {
     rpc LoginUser(LoginUserRequest) returns (UserResponse);
     rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse);
     rpc UpdateUser(UpdateUserRequest) returns (GetUserByIdResponse);
+    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
 }
 
 message User {
@@ -48,4 +49,12 @@ message GetUserByIdResponse {
 message UpdateUserRequest {
     string id = 1;
     string password = 2;
+}
+
+message DeleteUserRequest {
+    string id = 1;
+}
+
+message DeleteUserResponse {
+    string message = 1;
 }

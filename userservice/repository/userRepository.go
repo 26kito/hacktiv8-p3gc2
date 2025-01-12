@@ -16,6 +16,7 @@ type UserRepository interface {
 	LoginUser(username, password string) (*entity.User, error)
 	GetUserById(userID string) (*entity.User, error)
 	UpdateUser(userID, password string) (*entity.User, error)
+	DeleteUser(userID string) error
 }
 
 type userRepository struct {
@@ -82,6 +83,10 @@ func (ur *userRepository) GetUserById(userID string) (*entity.User, error) {
 	err = ur.collection.FindOne(context.Background(), bson.M{"_id": objectID}).Decode(&user)
 
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, fmt.Errorf("user not found")
+		}
+
 		return nil, err
 	}
 
@@ -92,6 +97,12 @@ func (ur *userRepository) UpdateUser(userID, password string) (*entity.User, err
 	var user entity.User
 
 	objectID, err := primitive.ObjectIDFromHex(userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = ur.GetUserById(userID)
 
 	if err != nil {
 		return nil, err
@@ -116,4 +127,26 @@ func (ur *userRepository) UpdateUser(userID, password string) (*entity.User, err
 	}
 
 	return &user, nil
+}
+
+func (ur *userRepository) DeleteUser(userID string) error {
+	objectID, err := primitive.ObjectIDFromHex(userID)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = ur.GetUserById(userID)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = ur.collection.DeleteOne(context.Background(), bson.M{"_id": objectID})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
