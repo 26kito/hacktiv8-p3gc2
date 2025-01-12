@@ -15,6 +15,7 @@ type UserRepository interface {
 	RegisterUser(payload entity.UserInput) (*entity.User, error)
 	LoginUser(username, password string) (*entity.User, error)
 	GetUserById(userID string) (*entity.User, error)
+	UpdateUser(userID, password string) (*entity.User, error)
 }
 
 type userRepository struct {
@@ -79,6 +80,36 @@ func (ur *userRepository) GetUserById(userID string) (*entity.User, error) {
 	}
 
 	err = ur.collection.FindOne(context.Background(), bson.M{"_id": objectID}).Decode(&user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (ur *userRepository) UpdateUser(userID, password string) (*entity.User, error) {
+	var user entity.User
+
+	objectID, err := primitive.ObjectIDFromHex(userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	bcryptPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+
+	if err != nil {
+		return nil, err
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"password": string(bcryptPassword),
+		},
+	}
+
+	err = ur.collection.FindOneAndUpdate(context.Background(), bson.M{"_id": objectID}, update).Decode(&user)
 
 	if err != nil {
 		return nil, err

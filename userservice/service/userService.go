@@ -82,6 +82,22 @@ func (us *UserService) GetUserById(ctx context.Context, req *pb.GetUserByIdReque
 	}, nil
 }
 
+func (us *UserService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.GetUserByIdResponse, error) {
+	userID := req.Id
+	password := req.Password
+
+	res, err := us.UserRepository.UpdateUser(userID, password)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.GetUserByIdResponse{
+		Id:       res.ID.Hex(),
+		Username: res.Username,
+	}, nil
+}
+
 func validateRegisterPayload(payload entity.UserInput) error {
 	if payload.Username == "" {
 		return fmt.Errorf("username is required")
