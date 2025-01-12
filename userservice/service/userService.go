@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 	"userservice/entity"
 	pb "userservice/proto"
@@ -85,6 +86,10 @@ func (us *UserService) GetUserById(ctx context.Context, req *pb.GetUserByIdReque
 func validateRegisterPayload(payload entity.UserInput) error {
 	if payload.Username == "" {
 		return fmt.Errorf("username is required")
+	}
+
+	if strings.Contains(payload.Username, " ") {
+		return fmt.Errorf("username cannot contain spaces")
 	}
 
 	if len(payload.Username) < 5 || len(payload.Username) > 15 {
