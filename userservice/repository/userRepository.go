@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"userservice/entity"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -29,6 +30,10 @@ func (ur *userRepository) RegisterUser(payload entity.UserInput) (*entity.User, 
 
 	if err != nil {
 		return nil, err
+	}
+
+	if userExists := ur.collection.FindOne(context.Background(), bson.M{"username": payload.Username}).Err(); userExists == nil {
+		return nil, fmt.Errorf("username %s already exists", payload.Username)
 	}
 
 	user := entity.User{
