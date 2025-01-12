@@ -147,3 +147,30 @@ func (s *Service) UpdateUser(c echo.Context) error {
 		Data:    res,
 	})
 }
+
+func (s *Service) DeleteUser(c echo.Context) error {
+	userID := c.Param("id")
+	token := c.Request().Header.Get("Authorization")
+
+	userPB := &pb.DeleteUserRequest{Id: userID}
+
+	md := metadata.Pairs("authorization", token)
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
+
+	_, err := s.UserClient.DeleteUser(ctx, userPB)
+
+	if err != nil {
+		st, _ := status.FromError(err)
+
+		errMessage := st.Message()
+
+		return c.JSON(http.StatusBadRequest, entity.ResponseError{
+			Message: errMessage,
+		})
+	}
+
+	return c.JSON(http.StatusOK, entity.ResponseOK{
+		Message: "User deleted",
+		Data:    nil,
+	})
+}
