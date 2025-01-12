@@ -5,7 +5,21 @@ option go_package = "./proto";
 
 service UserService {
     rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
+    rpc LoginUser(LoginUserRequest) returns (UserResponse);
     rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse);
+    rpc UpdateUser(UpdateUserRequest) returns (User);
+}
+
+message User {
+    string id = 1;
+    string username = 2;
+    string password = 3;
+}
+
+message UserResponse {
+    string id = 1;
+    string username = 2;
+    string token = 3;
 }
 
 message RegisterUserRequest {
@@ -17,8 +31,9 @@ message RegisterUserResponse {
     string id = 1;
 }
 
-message CreateUserError {
-    string message = 1;
+message LoginUserRequest {
+    string username = 1;
+    string password = 2;
 }
 
 message GetUserByIdRequest {
@@ -28,4 +43,9 @@ message GetUserByIdRequest {
 message GetUserByIdResponse {
     string id = 1;
     string username = 2;
+}
+
+message UpdateUserRequest {
+    string username = 1;
+    string password = 2;
 }
