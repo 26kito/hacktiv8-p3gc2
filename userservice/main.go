@@ -28,7 +28,7 @@ func UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServ
 	// Define protected routes
 	protectedRoutes := map[string]bool{
 		"/user.UserService/GetUserById": true,
-		// "/pb.UserService/UpdateUser":  true,
+		"/user.UserService/UpdateUser":  true,
 	}
 
 	// Check if the route requires authentication
