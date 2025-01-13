@@ -129,7 +129,7 @@ func (bs *BookService) DeleteBook(c echo.Context) error {
 
 func (bs *BookService) BorrowBook(c echo.Context) error {
 	var payload entity.BorrowBookRequest
-	id := c.Param("id")
+	bookId := c.Param("id")
 	token := c.Request().Header.Get("Authorization")
 
 	md := metadata.Pairs("authorization", token)
@@ -142,8 +142,7 @@ func (bs *BookService) BorrowBook(c echo.Context) error {
 	}
 
 	req := &pb.BorrowBookRequest{
-		BookId:     id,
-		UserId:     payload.UserID,
+		BookId:     bookId,
 		BorrowDate: payload.BorrowDate,
 	}
 
@@ -164,8 +163,12 @@ func (bs *BookService) BorrowBook(c echo.Context) error {
 }
 
 func (bs *BookService) ReturnBook(c echo.Context) error {
-	id := c.Param("id")
 	var payload entity.ReturnBookRequest
+	bookId := c.Param("id")
+	token := c.Request().Header.Get("Authorization")
+
+	md := metadata.Pairs("authorization", token)
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	if err := c.Bind(&payload); err != nil {
 		return c.JSON(400, entity.ResponseError{
@@ -174,11 +177,11 @@ func (bs *BookService) ReturnBook(c echo.Context) error {
 	}
 
 	req := &pb.ReturnBookRequest{
-		Id:         id,
+		BookId:     bookId,
 		ReturnDate: payload.ReturnDate,
 	}
 
-	_, err := bs.BookClient.ReturnBook(context.Background(), req)
+	_, err := bs.BookClient.ReturnBook(ctx, req)
 	if err != nil {
 		st, _ := status.FromError(err)
 		errMessage := st.Message()
