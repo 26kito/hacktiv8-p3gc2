@@ -5,11 +5,13 @@ import (
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type BookRepository interface {
 	GetAllBook() ([]entity.Book, error)
+	InsertBook(payload entity.InsertBookRequest) (*entity.Book, error)
 }
 
 type bookRepository struct {
@@ -42,4 +44,22 @@ func (br *bookRepository) GetAllBook() ([]entity.Book, error) {
 	}
 
 	return books, nil
+}
+
+func (br *bookRepository) InsertBook(payload entity.InsertBookRequest) (*entity.Book, error) {
+	newBook := entity.Book{
+		ID:            primitive.NewObjectID(),
+		Title:         payload.Title,
+		Author:        payload.Author,
+		PublishedDate: payload.PublishedDate,
+		Status:        payload.Status,
+	}
+
+	_, err := br.collection.InsertOne(context.Background(), newBook)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &newBook, nil
 }

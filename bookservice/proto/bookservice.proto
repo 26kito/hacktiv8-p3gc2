@@ -4,7 +4,7 @@ package bookservice;
 option go_package = "./proto";
 
 service BookService {
-    rpc InsertBook(InsertBookRequest) returns (GetBookResponse);
+    rpc InsertBook(InsertBookRequest) returns (InsertBookResponse);
     rpc GetAllBook(Empty) returns (GetAllBookResponse);
 }
 

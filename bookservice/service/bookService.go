@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bookservice/entity"
 	pb "bookservice/proto"
 	"bookservice/repository"
 	"context"
@@ -34,4 +35,20 @@ func (bs *BookService) GetAllBook(ctx context.Context, req *pb.Empty) (*pb.GetAl
 	}
 
 	return &pb.GetAllBookResponse{Books: pbBooks}, nil
+}
+
+func (bs *BookService) InsertBook(ctx context.Context, req *pb.InsertBookRequest) (*pb.InsertBookResponse, error) {
+	payload := entity.InsertBookRequest{
+		Title:         req.Title,
+		Author:        req.Author,
+		PublishedDate: req.PublishedDate,
+		Status:        req.Status,
+	}
+
+	res, err := bs.BookRepository.InsertBook(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.InsertBookResponse{Id: res.ID.Hex()}, nil
 }
