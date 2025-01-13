@@ -47,6 +47,8 @@ func NewRouter() *echo.Echo {
 	e.POST("/books/:id/borrow", bookController.BorrowBook)
 	e.POST("/books/:id/return", bookController.ReturnBook)
 
+	e.GET("/cron/book-update-status", bookController.UpdateBookStatus)
+
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	return e

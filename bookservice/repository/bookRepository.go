@@ -4,6 +4,7 @@ import (
 	"bookservice/entity"
 	"context"
 	"fmt"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,6 +19,7 @@ type BookRepository interface {
 	DeleteBook(id string) error
 	BorrowBook(uerId string, payload entity.BorrowBookRequest) (*entity.BorrowBook, error)
 	ReturnBook(userId string, payload entity.ReturnBookRequest) error
+	UpdateBookStatus() error
 }
 
 type bookRepository struct {
@@ -228,6 +230,45 @@ func (br *bookRepository) ReturnBook(userId string, payload entity.ReturnBookReq
 	_, err = br.booksCollection.UpdateOne(context.Background(), bson.M{"_id": borrowedBook.BookID}, bson.M{"$set": bson.M{"status": "available"}})
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (br *bookRepository) UpdateBookStatus() error {
+	cursor, err := br.borrowedBooksCollection.Find(context.Background(), bson.M{"return_date": ""})
+	if err != nil {
+		return err
+	}
+
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+		var borrowedBook entity.BorrowBook
+		cursor.Decode(&borrowedBook)
+
+		if borrowedBook.ReturnDate != "" {
+			continue
+		}
+
+		borrowDate, err := time.Parse("2006-01-02", borrowedBook.BorrowDate)
+		if err != nil {
+			return err
+		}
+
+		if time.Now().After(borrowDate.AddDate(0, 0, 7)) {
+			_, err := br.booksCollection.UpdateOne(context.Background(), bson.M{"_id": borrowedBook.BookID}, bson.M{"$set": bson.M{"status": "available"}})
+			if err != nil {
+				return err
+			}
+
+			currentDay := time.Now().Format("2006-01-02")
+
+			_, err = br.borrowedBooksCollection.UpdateOne(context.Background(), bson.M{"_id": borrowedBook.ID}, bson.M{"$set": bson.M{"return_date": currentDay}})
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil

@@ -270,3 +270,17 @@ func (bs *BookService) ReturnBook(c echo.Context) error {
 		Data:    nil,
 	})
 }
+
+func (bs *BookService) UpdateBookStatus(c echo.Context) error {
+	_, err := bs.BookClient.UpdateBookStatus(context.Background(), &pb.Empty{})
+	if err != nil {
+		return c.JSON(400, entity.ResponseError{
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(200, entity.ResponseOK{
+		Message: "Book status updated successfully",
+		Data:    nil,
+	})
+}

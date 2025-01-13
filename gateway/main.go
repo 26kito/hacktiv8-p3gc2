@@ -1,6 +1,9 @@
 package main
 
-import "gateway/config"
+import (
+	"gateway/config"
+	"gateway/cron"
+)
 
 // @title Book Library API
 // version 1.0
@@ -10,6 +13,9 @@ import "gateway/config"
 // @name Authorization
 func main() {
 	router := config.NewRouter()
+
+	cronJob := cron.SetupCronJobs()
+	cronJob.Start()
 
 	router.Logger.Fatal(router.Start(":8080"))
 }

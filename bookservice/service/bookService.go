@@ -136,6 +136,15 @@ func (bs *BookService) ReturnBook(ctx context.Context, req *pb.ReturnBookRequest
 	return &pb.Empty{}, nil
 }
 
+func (bs *BookService) UpdateBookStatus(ctx context.Context, req *pb.Empty) (*pb.Empty, error) {
+	err := bs.BookRepository.UpdateBookStatus()
+	if err != nil {
+		return nil, status.Error(500, err.Error())
+	}
+
+	return &pb.Empty{}, nil
+}
+
 func validateBorrowBookPayload(payload *pb.BorrowBookRequest) error {
 	if payload.BookId == "" {
 		return fmt.Errorf("book_id is required")

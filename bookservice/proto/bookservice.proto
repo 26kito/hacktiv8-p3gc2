@@ -11,6 +11,7 @@ service BookService {
     rpc DeleteBook(GetBookByIdRequest) returns (Empty);
     rpc BorrowBook(BorrowBookRequest) returns (BorrowBookResponse);
     rpc ReturnBook(ReturnBookRequest) returns (Empty);
+    rpc UpdateBookStatus(Empty) returns (Empty);
 }
 
 message Book {
