@@ -37,6 +37,7 @@ func NewRouter() *echo.Echo {
 	e.DELETE("/users/:id", userController.DeleteUser)
 
 	e.GET("/books", bookController.GetAllBook)
+	e.POST("/books", bookController.InsertBook)
 
 	return e
 }

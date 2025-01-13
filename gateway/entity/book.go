@@ -9,3 +9,10 @@ type Book struct {
 	PublishedDate string             `bson:"published_date" json:"published_date"`
 	Status        string             `bson:"status" json:"status"`
 }
+
+type InsertBookRequest struct {
+	Title         string `json:"title"`
+	Author        string `json:"author"`
+	PublishedDate string `json:"published_date"`
+	Status        string `json:"status"`
+}
