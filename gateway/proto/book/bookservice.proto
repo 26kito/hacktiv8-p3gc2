@@ -9,6 +9,7 @@ service BookService {
     rpc GetBookById(GetBookByIdRequest) returns (GetBookResponse);
     rpc UpdateBook(UpdateBookRequest) returns (UpdateBookResponse);
     rpc DeleteBook(GetBookByIdRequest) returns (Empty);
+    rpc BorrowBook(BorrowBookRequest) returns (BorrowBookResponse);
 }
 
 message Book {
@@ -58,7 +59,14 @@ message UpdateBookResponse {
     string id = 1;
 }
 
-message DeleteBookRequest {
+message BorrowBookRequest {
+    string book_id = 1;
+    string user_id = 2;
+    string borrow_date = 3;
+    string return_date = 4;
+}
+
+message BorrowBookResponse {
     string id = 1;
 }
 

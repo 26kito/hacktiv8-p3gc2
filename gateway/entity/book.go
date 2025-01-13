@@ -24,3 +24,18 @@ type UpdateBookRequest struct {
 	PublishedDate string `json:"published_date"`
 	Status        string `json:"status"`
 }
+
+type BorrowBook struct {
+	ID         primitive.ObjectID `bson:"_id,omitempty"`
+	BookID     primitive.ObjectID `bson:"book_id"`
+	UserID     primitive.ObjectID `bson:"user_id"`
+	BorrowDate string             `bson:"borrow_date"`
+	ReturnDate string             `bson:"return_date"`
+}
+
+type BorrowBookRequest struct {
+	BookID     string `json:"book_id"`
+	UserID     string `json:"user_id"`
+	BorrowDate string `json:"borrow_date"`
+	ReturnDate string `json:"return_date"`
+}

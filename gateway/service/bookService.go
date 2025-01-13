@@ -124,3 +124,33 @@ func (bs *BookService) DeleteBook(c echo.Context) error {
 		Data:    nil,
 	})
 }
+
+func (bs *BookService) BorrowBook(c echo.Context) error {
+	id := c.Param("id")
+	var payload entity.BorrowBookRequest
+
+	if err := c.Bind(&payload); err != nil {
+		return c.JSON(400, entity.ResponseError{
+			Message: err.Error(),
+		})
+	}
+
+	req := &pb.BorrowBookRequest{
+		BookId:     id,
+		UserId:     payload.UserID,
+		BorrowDate: payload.BorrowDate,
+		ReturnDate: payload.ReturnDate,
+	}
+
+	res, err := bs.BookClient.BorrowBook(context.Background(), req)
+	if err != nil {
+		return c.JSON(400, entity.ResponseError{
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(200, entity.ResponseOK{
+		Message: "Book borrowed successfully",
+		Data:    res.Id,
+	})
+}
