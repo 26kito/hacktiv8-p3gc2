@@ -17,6 +17,7 @@ type BookRepository interface {
 	UpdateBook(payload entity.UpdateBookRequest) (*entity.Book, error)
 	DeleteBook(id string) error
 	BorrowBook(payload entity.BorrowBookRequest) (*entity.BorrowBook, error)
+	ReturnBook(payload entity.ReturnBookRequest) error
 }
 
 type bookRepository struct {
@@ -161,7 +162,7 @@ func (br *bookRepository) BorrowBook(payload entity.BorrowBookRequest) (*entity.
 		BookID:     bookID,
 		UserID:     userID,
 		BorrowDate: payload.BorrowDate,
-		ReturnDate: payload.ReturnDate,
+		ReturnDate: "",
 	}
 
 	_, err = br.borrowedBooksCollection.InsertOne(context.Background(), newBorrowBook)
@@ -172,4 +173,49 @@ func (br *bookRepository) BorrowBook(payload entity.BorrowBookRequest) (*entity.
 	_, err = br.booksCollection.UpdateOne(context.Background(), bson.M{"_id": bookID}, bson.M{"$set": bson.M{"status": "borrowed"}})
 
 	return &newBorrowBook, nil
+}
+
+func (br *bookRepository) BorrowBookDetail(id string) (*entity.BorrowBook, error) {
+	var borrowBook entity.BorrowBook
+
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	err = br.borrowedBooksCollection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&borrowBook)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &borrowBook, nil
+}
+
+func (br *bookRepository) ReturnBook(payload entity.ReturnBookRequest) error {
+	objID, err := primitive.ObjectIDFromHex(payload.ID)
+	if err != nil {
+		return err
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"return_date": payload.ReturnDate,
+		},
+	}
+
+	_, err = br.borrowedBooksCollection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
+
+	if err != nil {
+		return err
+	}
+
+	borrowedBook, err := br.BorrowBookDetail(payload.ID)
+	if err != nil {
+		return err
+	}
+
+	_, err = br.booksCollection.UpdateOne(context.Background(), bson.M{"_id": borrowedBook.BookID}, bson.M{"$set": bson.M{"status": "available"}})
+
+	return nil
 }

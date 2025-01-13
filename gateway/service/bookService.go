@@ -6,6 +6,8 @@ import (
 	pb "gateway/proto/book"
 
 	"github.com/labstack/echo/v4"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 type BookService struct {
@@ -126,8 +128,12 @@ func (bs *BookService) DeleteBook(c echo.Context) error {
 }
 
 func (bs *BookService) BorrowBook(c echo.Context) error {
-	id := c.Param("id")
 	var payload entity.BorrowBookRequest
+	id := c.Param("id")
+	token := c.Request().Header.Get("Authorization")
+
+	md := metadata.Pairs("authorization", token)
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	if err := c.Bind(&payload); err != nil {
 		return c.JSON(400, entity.ResponseError{
@@ -139,18 +145,51 @@ func (bs *BookService) BorrowBook(c echo.Context) error {
 		BookId:     id,
 		UserId:     payload.UserID,
 		BorrowDate: payload.BorrowDate,
-		ReturnDate: payload.ReturnDate,
 	}
 
-	res, err := bs.BookClient.BorrowBook(context.Background(), req)
+	res, err := bs.BookClient.BorrowBook(ctx, req)
 	if err != nil {
+		st, _ := status.FromError(err)
+		errMessage := st.Message()
+
 		return c.JSON(400, entity.ResponseError{
-			Message: err.Error(),
+			Message: errMessage,
 		})
 	}
 
 	return c.JSON(200, entity.ResponseOK{
 		Message: "Book borrowed successfully",
 		Data:    res.Id,
+	})
+}
+
+func (bs *BookService) ReturnBook(c echo.Context) error {
+	id := c.Param("id")
+	var payload entity.ReturnBookRequest
+
+	if err := c.Bind(&payload); err != nil {
+		return c.JSON(400, entity.ResponseError{
+			Message: err.Error(),
+		})
+	}
+
+	req := &pb.ReturnBookRequest{
+		Id:         id,
+		ReturnDate: payload.ReturnDate,
+	}
+
+	_, err := bs.BookClient.ReturnBook(context.Background(), req)
+	if err != nil {
+		st, _ := status.FromError(err)
+		errMessage := st.Message()
+
+		return c.JSON(400, entity.ResponseError{
+			Message: errMessage,
+		})
+	}
+
+	return c.JSON(200, entity.ResponseOK{
+		Message: "Book returned successfully",
+		Data:    nil,
 	})
 }

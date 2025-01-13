@@ -37,5 +37,9 @@ type BorrowBookRequest struct {
 	BookID     string `json:"book_id"`
 	UserID     string `json:"user_id"`
 	BorrowDate string `json:"borrow_date"`
+}
+
+type ReturnBookRequest struct {
+	ID         string `json:"id"`
 	ReturnDate string `json:"return_date"`
 }

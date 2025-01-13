@@ -5,6 +5,12 @@ import (
 	pb "bookservice/proto"
 	"bookservice/repository"
 	"context"
+	"errors"
+	"fmt"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"google.golang.org/grpc/status"
 )
 
 type BookService struct {
@@ -95,17 +101,65 @@ func (bs *BookService) DeleteBook(ctx context.Context, req *pb.GetBookByIdReques
 }
 
 func (bs *BookService) BorrowBook(ctx context.Context, req *pb.BorrowBookRequest) (*pb.BorrowBookResponse, error) {
+	userId := ctx.Value("user").(jwt.MapClaims)["user_id"].(string)
+
 	payload := entity.BorrowBookRequest{
 		BookID:     req.BookId,
-		UserID:     req.UserId,
+		UserID:     userId,
 		BorrowDate: req.BorrowDate,
-		ReturnDate: req.ReturnDate,
+	}
+
+	if err := validateBorrowBookPayload(req); err != nil {
+		return nil, status.Error(400, err.Error())
 	}
 
 	res, err := bs.BookRepository.BorrowBook(payload)
 	if err != nil {
-		return nil, err
+		return nil, status.Error(500, err.Error())
 	}
 
 	return &pb.BorrowBookResponse{Id: res.ID.Hex()}, nil
+}
+
+func (bs *BookService) ReturnBook(ctx context.Context, req *pb.ReturnBookRequest) (*pb.Empty, error) {
+	payload := entity.ReturnBookRequest{
+		ID:         req.Id,
+		ReturnDate: req.ReturnDate,
+	}
+
+	err := bs.BookRepository.ReturnBook(payload)
+	if err != nil {
+		return nil, status.Error(500, err.Error())
+	}
+
+	return &pb.Empty{}, nil
+}
+
+func validateBorrowBookPayload(payload *pb.BorrowBookRequest) error {
+	if payload.BookId == "" {
+		return fmt.Errorf("book_id is required")
+	}
+
+	if payload.UserId == "" {
+		return fmt.Errorf("user_id is required")
+	}
+
+	if payload.BorrowDate == "" {
+		return fmt.Errorf("borrow_date is required")
+	}
+
+	parsedDate, err := time.Parse("2006-01-02", payload.BorrowDate)
+	if err != nil {
+		return errors.New("invalid borrow_date format, expected YYYY-MM-DD")
+	}
+
+	// Get the current date (without time part)
+	currentDate := time.Now().Truncate(24 * time.Hour)
+
+	// Validate that borrow_date is not earlier than the current date
+	if parsedDate.Before(currentDate) {
+		return errors.New("borrow_date cannot be earlier than the current date")
+	}
+
+	return nil
 }

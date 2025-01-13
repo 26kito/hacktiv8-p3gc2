@@ -43,6 +43,7 @@ func NewRouter() *echo.Echo {
 	e.DELETE("/books/:id", bookController.DeleteBook)
 
 	e.POST("/books/:id/borrow", bookController.BorrowBook)
+	e.POST("/borrowed-books/:id/return", bookController.ReturnBook)
 
 	return e
 }
