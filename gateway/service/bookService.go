@@ -54,3 +54,22 @@ func (bs *BookService) InsertBook(c echo.Context) error {
 		Data:    resp,
 	})
 }
+
+func (bs *BookService) GetBookById(c echo.Context) error {
+	id := c.Param("id")
+	req := &pb.GetBookByIdRequest{
+		Id: id,
+	}
+
+	resp, err := bs.BookClient.GetBookById(context.Background(), req)
+	if err != nil {
+		return c.JSON(400, entity.ResponseError{
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(200, entity.ResponseOK{
+		Message: "Success",
+		Data:    resp,
+	})
+}
