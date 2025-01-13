@@ -73,3 +73,35 @@ func (bs *BookService) GetBookById(c echo.Context) error {
 		Data:    resp,
 	})
 }
+
+func (bs *BookService) UpdateBook(c echo.Context) error {
+	id := c.Param("id")
+	var payload entity.UpdateBookRequest
+
+	if err := c.Bind(&payload); err != nil {
+		return c.JSON(400, entity.ResponseError{
+			Message: err.Error(),
+		})
+	}
+
+	req := &pb.UpdateBookRequest{
+		Id:            id,
+		Title:         payload.Title,
+		Author:        payload.Author,
+		PublishedDate: payload.PublishedDate,
+		Status:        payload.Status,
+	}
+
+	_, err := bs.BookClient.UpdateBook(context.Background(), req)
+
+	if err != nil {
+		return c.JSON(400, entity.ResponseError{
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(200, entity.ResponseOK{
+		Message: "Book updated successfully",
+		Data:    nil,
+	})
+}

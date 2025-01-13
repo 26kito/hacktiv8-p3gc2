@@ -39,6 +39,7 @@ func NewRouter() *echo.Echo {
 	e.GET("/books", bookController.GetAllBook)
 	e.POST("/books", bookController.InsertBook)
 	e.GET("/books/:id", bookController.GetBookById)
+	e.PUT("/books/:id", bookController.UpdateBook)
 
 	return e
 }
