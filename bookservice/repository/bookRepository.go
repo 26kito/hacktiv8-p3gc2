@@ -12,6 +12,7 @@ import (
 type BookRepository interface {
 	GetAllBook() ([]entity.Book, error)
 	InsertBook(payload entity.InsertBookRequest) (*entity.Book, error)
+	GetBookById(id string) (*entity.Book, error)
 }
 
 type bookRepository struct {
@@ -62,4 +63,21 @@ func (br *bookRepository) InsertBook(payload entity.InsertBookRequest) (*entity.
 	}
 
 	return &newBook, nil
+}
+
+func (br *bookRepository) GetBookById(id string) (*entity.Book, error) {
+	var book entity.Book
+
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	err = br.collection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&book)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &book, nil
 }

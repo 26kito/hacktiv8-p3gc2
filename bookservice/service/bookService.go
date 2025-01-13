@@ -52,3 +52,18 @@ func (bs *BookService) InsertBook(ctx context.Context, req *pb.InsertBookRequest
 
 	return &pb.InsertBookResponse{Id: res.ID.Hex()}, nil
 }
+
+func (bs *BookService) GetBookById(ctx context.Context, req *pb.GetBookByIdRequest) (*pb.GetBookResponse, error) {
+	book, err := bs.BookRepository.GetBookById(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.GetBookResponse{Book: &pb.Book{
+		Id:            book.ID.Hex(),
+		Title:         book.Title,
+		Author:        book.Author,
+		PublishedDate: book.PublishedDate,
+		Status:        book.Status,
+	}}, nil
+}

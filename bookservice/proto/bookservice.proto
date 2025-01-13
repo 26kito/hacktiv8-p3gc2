@@ -6,6 +6,7 @@ option go_package = "./proto";
 service BookService {
     rpc InsertBook(InsertBookRequest) returns (InsertBookResponse);
     rpc GetAllBook(Empty) returns (GetAllBookResponse);
+    rpc GetBookById(GetBookByIdRequest) returns (GetBookResponse);
 }
 
 message Book {
@@ -36,6 +37,10 @@ message InsertBookRequest {
 }
 
 message InsertBookResponse {
+    string id = 1;
+}
+
+message GetBookByIdRequest {
     string id = 1;
 }
 
