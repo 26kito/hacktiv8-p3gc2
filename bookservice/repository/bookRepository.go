@@ -3,6 +3,7 @@ package repository
 import (
 	"bookservice/entity"
 	"context"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -15,20 +16,26 @@ type BookRepository interface {
 	GetBookById(id string) (*entity.Book, error)
 	UpdateBook(payload entity.UpdateBookRequest) (*entity.Book, error)
 	DeleteBook(id string) error
+	BorrowBook(payload entity.BorrowBookRequest) (*entity.BorrowBook, error)
 }
 
 type bookRepository struct {
-	collection *mongo.Collection
+	// collection *mongo.Collection
+	booksCollection         *mongo.Collection
+	borrowedBooksCollection *mongo.Collection
 }
 
-func NewBookRepository(collection *mongo.Collection) *bookRepository {
-	return &bookRepository{collection}
+func NewBookRepository(booksCollection, borrowedBooksCollection *mongo.Collection) *bookRepository {
+	return &bookRepository{
+		booksCollection:         booksCollection,
+		borrowedBooksCollection: borrowedBooksCollection,
+	}
 }
 
 func (br *bookRepository) GetAllBook() ([]entity.Book, error) {
 	var books []entity.Book
 
-	cursor, err := br.collection.Find(context.Background(), bson.M{})
+	cursor, err := br.booksCollection.Find(context.Background(), bson.M{})
 
 	if err != nil {
 		return nil, err
@@ -58,7 +65,7 @@ func (br *bookRepository) InsertBook(payload entity.InsertBookRequest) (*entity.
 		Status:        payload.Status,
 	}
 
-	_, err := br.collection.InsertOne(context.Background(), newBook)
+	_, err := br.booksCollection.InsertOne(context.Background(), newBook)
 
 	if err != nil {
 		return nil, err
@@ -75,7 +82,7 @@ func (br *bookRepository) GetBookById(id string) (*entity.Book, error) {
 		return nil, err
 	}
 
-	err = br.collection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&book)
+	err = br.booksCollection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&book)
 
 	if err != nil {
 		return nil, err
@@ -99,7 +106,7 @@ func (br *bookRepository) UpdateBook(payload entity.UpdateBookRequest) (*entity.
 		},
 	}
 
-	_, err = br.collection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
+	_, err = br.booksCollection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
 
 	if err != nil {
 		return nil, err
@@ -120,11 +127,49 @@ func (br *bookRepository) DeleteBook(id string) error {
 		return err
 	}
 
-	_, err = br.collection.DeleteOne(context.Background(), bson.M{"_id": objID})
+	_, err = br.booksCollection.DeleteOne(context.Background(), bson.M{"_id": objID})
 
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (br *bookRepository) BorrowBook(payload entity.BorrowBookRequest) (*entity.BorrowBook, error) {
+	bookID, err := primitive.ObjectIDFromHex(payload.BookID)
+	if err != nil {
+		return nil, err
+	}
+
+	userID, err := primitive.ObjectIDFromHex(payload.UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	book, err := br.GetBookById(payload.BookID)
+	if err != nil {
+		return nil, err
+	}
+
+	if book.Status != "available" {
+		return nil, fmt.Errorf("book is not available")
+	}
+
+	newBorrowBook := entity.BorrowBook{
+		ID:         primitive.NewObjectID(),
+		BookID:     bookID,
+		UserID:     userID,
+		BorrowDate: payload.BorrowDate,
+		ReturnDate: payload.ReturnDate,
+	}
+
+	_, err = br.borrowedBooksCollection.InsertOne(context.Background(), newBorrowBook)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = br.booksCollection.UpdateOne(context.Background(), bson.M{"_id": bookID}, bson.M{"$set": bson.M{"status": "borrowed"}})
+
+	return &newBorrowBook, nil
 }

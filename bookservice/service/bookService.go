@@ -93,3 +93,19 @@ func (bs *BookService) DeleteBook(ctx context.Context, req *pb.GetBookByIdReques
 
 	return &pb.Empty{}, nil
 }
+
+func (bs *BookService) BorrowBook(ctx context.Context, req *pb.BorrowBookRequest) (*pb.BorrowBookResponse, error) {
+	payload := entity.BorrowBookRequest{
+		BookID:     req.BookId,
+		UserID:     req.UserId,
+		BorrowDate: req.BorrowDate,
+		ReturnDate: req.ReturnDate,
+	}
+
+	res, err := bs.BookRepository.BorrowBook(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.BorrowBookResponse{Id: res.ID.Hex()}, nil
+}

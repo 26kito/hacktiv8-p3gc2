@@ -23,7 +23,7 @@ func main() {
 
 	godotenv.Load()
 
-	db, err := config.Connect(context.Background())
+	booksCollection, borrowedBooksCollection, err := config.Connect(context.Background())
 
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
@@ -33,7 +33,7 @@ func main() {
 	server := grpc.NewServer()
 
 	// Register the service with the server
-	bookRepository := repository.NewBookRepository(db)
+	bookRepository := repository.NewBookRepository(booksCollection, borrowedBooksCollection)
 	bookService := service.NewBookService(bookRepository)
 
 	pb.RegisterBookServiceServer(server, bookService)

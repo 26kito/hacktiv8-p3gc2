@@ -504,6 +504,118 @@ func (x *UpdateBookResponse) GetId() string {
 	return ""
 }
 
+type BorrowBookRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BookId        string                 `protobuf:"bytes,1,opt,name=book_id,json=bookId,proto3" json:"book_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	BorrowDate    string                 `protobuf:"bytes,3,opt,name=borrow_date,json=borrowDate,proto3" json:"borrow_date,omitempty"`
+	ReturnDate    string                 `protobuf:"bytes,4,opt,name=return_date,json=returnDate,proto3" json:"return_date,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BorrowBookRequest) Reset() {
+	*x = BorrowBookRequest{}
+	mi := &file_proto_bookservice_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BorrowBookRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BorrowBookRequest) ProtoMessage() {}
+
+func (x *BorrowBookRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_bookservice_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BorrowBookRequest.ProtoReflect.Descriptor instead.
+func (*BorrowBookRequest) Descriptor() ([]byte, []int) {
+	return file_proto_bookservice_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *BorrowBookRequest) GetBookId() string {
+	if x != nil {
+		return x.BookId
+	}
+	return ""
+}
+
+func (x *BorrowBookRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *BorrowBookRequest) GetBorrowDate() string {
+	if x != nil {
+		return x.BorrowDate
+	}
+	return ""
+}
+
+func (x *BorrowBookRequest) GetReturnDate() string {
+	if x != nil {
+		return x.ReturnDate
+	}
+	return ""
+}
+
+type BorrowBookResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BorrowBookResponse) Reset() {
+	*x = BorrowBookResponse{}
+	mi := &file_proto_bookservice_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BorrowBookResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BorrowBookResponse) ProtoMessage() {}
+
+func (x *BorrowBookResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_bookservice_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BorrowBookResponse.ProtoReflect.Descriptor instead.
+func (*BorrowBookResponse) Descriptor() ([]byte, []int) {
+	return file_proto_bookservice_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *BorrowBookResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 type Empty struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -512,7 +624,7 @@ type Empty struct {
 
 func (x *Empty) Reset() {
 	*x = Empty{}
-	mi := &file_proto_bookservice_proto_msgTypes[9]
+	mi := &file_proto_bookservice_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -524,7 +636,7 @@ func (x *Empty) String() string {
 func (*Empty) ProtoMessage() {}
 
 func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_bookservice_proto_msgTypes[9]
+	mi := &file_proto_bookservice_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -537,7 +649,7 @@ func (x *Empty) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Empty.ProtoReflect.Descriptor instead.
 func (*Empty) Descriptor() ([]byte, []int) {
-	return file_proto_bookservice_proto_rawDescGZIP(), []int{9}
+	return file_proto_bookservice_proto_rawDescGZIP(), []int{11}
 }
 
 var File_proto_bookservice_proto protoreflect.FileDescriptor
@@ -588,7 +700,18 @@ var file_proto_bookservice_proto_rawDesc = []byte{
 	0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x24, 0x0a, 0x12, 0x55, 0x70, 0x64,
 	0x61, 0x74, 0x65, 0x42, 0x6f, 0x6f, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
 	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22,
-	0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x32, 0xff, 0x02, 0x0a, 0x0b, 0x42, 0x6f, 0x6f,
+	0x87, 0x01, 0x0a, 0x11, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x42, 0x6f, 0x6f, 0x6b, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x62, 0x6f, 0x6f, 0x6b, 0x5f, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x62, 0x6f, 0x6f, 0x6b, 0x49, 0x64, 0x12, 0x17,
+	0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x62, 0x6f, 0x72, 0x72, 0x6f,
+	0x77, 0x5f, 0x64, 0x61, 0x74, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x62, 0x6f,
+	0x72, 0x72, 0x6f, 0x77, 0x44, 0x61, 0x74, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x72, 0x65, 0x74, 0x75,
+	0x72, 0x6e, 0x5f, 0x64, 0x61, 0x74, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x72,
+	0x65, 0x74, 0x75, 0x72, 0x6e, 0x44, 0x61, 0x74, 0x65, 0x22, 0x24, 0x0a, 0x12, 0x42, 0x6f, 0x72,
+	0x72, 0x6f, 0x77, 0x42, 0x6f, 0x6f, 0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22,
+	0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x32, 0xce, 0x03, 0x0a, 0x0b, 0x42, 0x6f, 0x6f,
 	0x6b, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x4d, 0x0a, 0x0a, 0x49, 0x6e, 0x73, 0x65,
 	0x72, 0x74, 0x42, 0x6f, 0x6f, 0x6b, 0x12, 0x1e, 0x2e, 0x62, 0x6f, 0x6f, 0x6b, 0x73, 0x65, 0x72,
 	0x76, 0x69, 0x63, 0x65, 0x2e, 0x49, 0x6e, 0x73, 0x65, 0x72, 0x74, 0x42, 0x6f, 0x6f, 0x6b, 0x52,
@@ -612,8 +735,13 @@ var file_proto_bookservice_proto_rawDesc = []byte{
 	0x65, 0x42, 0x6f, 0x6f, 0x6b, 0x12, 0x1f, 0x2e, 0x62, 0x6f, 0x6f, 0x6b, 0x73, 0x65, 0x72, 0x76,
 	0x69, 0x63, 0x65, 0x2e, 0x47, 0x65, 0x74, 0x42, 0x6f, 0x6f, 0x6b, 0x42, 0x79, 0x49, 0x64, 0x52,
 	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x62, 0x6f, 0x6f, 0x6b, 0x73, 0x65, 0x72,
-	0x76, 0x69, 0x63, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x2f,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x76, 0x69, 0x63, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x4d, 0x0a, 0x0a, 0x42, 0x6f,
+	0x72, 0x72, 0x6f, 0x77, 0x42, 0x6f, 0x6f, 0x6b, 0x12, 0x1e, 0x2e, 0x62, 0x6f, 0x6f, 0x6b, 0x73,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x42, 0x6f, 0x6f,
+	0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x62, 0x6f, 0x6f, 0x6b, 0x73,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x42, 0x6f, 0x6f,
+	0x6b, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -628,7 +756,7 @@ func file_proto_bookservice_proto_rawDescGZIP() []byte {
 	return file_proto_bookservice_proto_rawDescData
 }
 
-var file_proto_bookservice_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_proto_bookservice_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_proto_bookservice_proto_goTypes = []any{
 	(*Book)(nil),               // 0: bookservice.Book
 	(*GetAllBookResponse)(nil), // 1: bookservice.GetAllBookResponse
@@ -639,26 +767,30 @@ var file_proto_bookservice_proto_goTypes = []any{
 	(*GetBookByIdRequest)(nil), // 6: bookservice.GetBookByIdRequest
 	(*UpdateBookRequest)(nil),  // 7: bookservice.UpdateBookRequest
 	(*UpdateBookResponse)(nil), // 8: bookservice.UpdateBookResponse
-	(*Empty)(nil),              // 9: bookservice.Empty
+	(*BorrowBookRequest)(nil),  // 9: bookservice.BorrowBookRequest
+	(*BorrowBookResponse)(nil), // 10: bookservice.BorrowBookResponse
+	(*Empty)(nil),              // 11: bookservice.Empty
 }
 var file_proto_bookservice_proto_depIdxs = []int32{
-	0, // 0: bookservice.GetAllBookResponse.books:type_name -> bookservice.Book
-	0, // 1: bookservice.GetBookResponse.book:type_name -> bookservice.Book
-	4, // 2: bookservice.BookService.InsertBook:input_type -> bookservice.InsertBookRequest
-	9, // 3: bookservice.BookService.GetAllBook:input_type -> bookservice.Empty
-	6, // 4: bookservice.BookService.GetBookById:input_type -> bookservice.GetBookByIdRequest
-	7, // 5: bookservice.BookService.UpdateBook:input_type -> bookservice.UpdateBookRequest
-	6, // 6: bookservice.BookService.DeleteBook:input_type -> bookservice.GetBookByIdRequest
-	5, // 7: bookservice.BookService.InsertBook:output_type -> bookservice.InsertBookResponse
-	1, // 8: bookservice.BookService.GetAllBook:output_type -> bookservice.GetAllBookResponse
-	3, // 9: bookservice.BookService.GetBookById:output_type -> bookservice.GetBookResponse
-	8, // 10: bookservice.BookService.UpdateBook:output_type -> bookservice.UpdateBookResponse
-	9, // 11: bookservice.BookService.DeleteBook:output_type -> bookservice.Empty
-	7, // [7:12] is the sub-list for method output_type
-	2, // [2:7] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0,  // 0: bookservice.GetAllBookResponse.books:type_name -> bookservice.Book
+	0,  // 1: bookservice.GetBookResponse.book:type_name -> bookservice.Book
+	4,  // 2: bookservice.BookService.InsertBook:input_type -> bookservice.InsertBookRequest
+	11, // 3: bookservice.BookService.GetAllBook:input_type -> bookservice.Empty
+	6,  // 4: bookservice.BookService.GetBookById:input_type -> bookservice.GetBookByIdRequest
+	7,  // 5: bookservice.BookService.UpdateBook:input_type -> bookservice.UpdateBookRequest
+	6,  // 6: bookservice.BookService.DeleteBook:input_type -> bookservice.GetBookByIdRequest
+	9,  // 7: bookservice.BookService.BorrowBook:input_type -> bookservice.BorrowBookRequest
+	5,  // 8: bookservice.BookService.InsertBook:output_type -> bookservice.InsertBookResponse
+	1,  // 9: bookservice.BookService.GetAllBook:output_type -> bookservice.GetAllBookResponse
+	3,  // 10: bookservice.BookService.GetBookById:output_type -> bookservice.GetBookResponse
+	8,  // 11: bookservice.BookService.UpdateBook:output_type -> bookservice.UpdateBookResponse
+	11, // 12: bookservice.BookService.DeleteBook:output_type -> bookservice.Empty
+	10, // 13: bookservice.BookService.BorrowBook:output_type -> bookservice.BorrowBookResponse
+	8,  // [8:14] is the sub-list for method output_type
+	2,  // [2:8] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_bookservice_proto_init() }
@@ -672,7 +804,7 @@ func file_proto_bookservice_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_bookservice_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
