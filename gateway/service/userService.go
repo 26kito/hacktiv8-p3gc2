@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"gateway/entity"
-	pb "gateway/proto"
+	pb "gateway/proto/user"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -15,6 +15,16 @@ type Service struct {
 	UserClient pb.UserServiceClient
 }
 
+// @Summary Register a new user
+// @Description Register a new user
+// @Tags users
+// @ID register-user
+// @Accept json
+// @Produce json
+// @Param user body entity.UserInput true "User data"
+// @Success 201 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /users [post]
 func (s *Service) Register(c echo.Context) error {
 	var payload entity.UserInput
 
@@ -51,6 +61,17 @@ func (s *Service) Register(c echo.Context) error {
 	})
 }
 
+// @Summary Get user by ID
+// @Description Get user by ID
+// @Tags users
+// @ID get-user-by-id
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param id path string true "User ID"
+// @Success 200 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /users/{id} [get]
 func (s *Service) GetUserById(c echo.Context) error {
 	userID := c.Param("id")
 	token := c.Request().Header.Get("Authorization")
@@ -78,6 +99,16 @@ func (s *Service) GetUserById(c echo.Context) error {
 	})
 }
 
+// @Summary Login user
+// @Description Login user
+// @Tags users
+// @ID login-user
+// @Accept json
+// @Produce json
+// @Param user body entity.UserInput true "User data"
+// @Success 200 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /users/login [post]
 func (s *Service) Login(c echo.Context) error {
 	var payload entity.UserInput
 
@@ -114,6 +145,18 @@ func (s *Service) Login(c echo.Context) error {
 	})
 }
 
+// @Summary Update user
+// @Description Update user
+// @Tags users
+// @ID update-user
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param id path string true "User ID"
+// @Param user body entity.UpdateUserPayload true "User data"
+// @Success 200 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /users/{id} [put]
 func (s *Service) UpdateUser(c echo.Context) error {
 	var payload entity.UpdateUserPayload
 	token := c.Request().Header.Get("Authorization")
@@ -148,6 +191,17 @@ func (s *Service) UpdateUser(c echo.Context) error {
 	})
 }
 
+// @Summary Delete user
+// @Description Delete user
+// @Tags users
+// @ID delete-user
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param id path string true "User ID"
+// @Success 200 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /users/{id} [delete]
 func (s *Service) DeleteUser(c echo.Context) error {
 	userID := c.Param("id")
 	token := c.Request().Header.Get("Authorization")

@@ -95,7 +95,6 @@ func main() {
 	bookService := service.NewBookService(bookRepository)
 
 	pb.RegisterBookServiceServer(server, bookService)
-
 	log.Println("Starting gRPC server on port :50052")
 
 	if err := server.Serve(listen); err != nil {

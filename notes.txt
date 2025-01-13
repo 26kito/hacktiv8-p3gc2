@@ -1,0 +1,13 @@
+1. clone dari github
+git clone https://github.com/26kito/hacktiv8-p3gc2.git
+
+2. build docker dan run
+docker-compose up --build -d
+
+3. base endpoint
+http://localhost:8080/
+
+4. api docs with swagger
+http://localhost:8080/swagger/index.html
+
+5. maaf kak gabisa deploy ke gcp, space di google cloud penuh😭 kewalahan banget belakangan ini sering bolak balik rs jenguk ayah

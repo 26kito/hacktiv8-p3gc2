@@ -14,6 +14,15 @@ type BookService struct {
 	BookClient pb.BookServiceClient
 }
 
+// @Summary Get all books
+// @Description Get all books
+// @Tags books
+// @ID get-all-books
+// @Accept json
+// @Produce json
+// @Success 200 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /books [get]
 func (bs *BookService) GetAllBook(c echo.Context) error {
 	resp, err := bs.BookClient.GetAllBook(context.Background(), &pb.Empty{})
 	if err != nil {
@@ -28,6 +37,16 @@ func (bs *BookService) GetAllBook(c echo.Context) error {
 	})
 }
 
+// @Summary Insert a new book
+// @Description Insert a new book
+// @Tags books
+// @ID insert-book
+// @Accept json
+// @Produce json
+// @Param book body entity.InsertBookRequest true "Book data"
+// @Success 200 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /books [post]
 func (bs *BookService) InsertBook(c echo.Context) error {
 	var payload entity.InsertBookRequest
 
@@ -57,6 +76,16 @@ func (bs *BookService) InsertBook(c echo.Context) error {
 	})
 }
 
+// @Summary Get book by ID
+// @Description Get book by ID
+// @Tags books
+// @ID get-book-by-id
+// @Accept json
+// @Produce json
+// @Param id path string true "Book ID"
+// @Success 200 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /books/{id} [get]
 func (bs *BookService) GetBookById(c echo.Context) error {
 	id := c.Param("id")
 	req := &pb.GetBookByIdRequest{
@@ -76,6 +105,17 @@ func (bs *BookService) GetBookById(c echo.Context) error {
 	})
 }
 
+// @Summary Update a book
+// @Description Update a book
+// @Tags books
+// @ID update-book
+// @Accept json
+// @Produce json
+// @Param id path string true "Book ID"
+// @Param book body entity.UpdateBookRequest true "Book data"
+// @Success 200 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /books/{id} [put]
 func (bs *BookService) UpdateBook(c echo.Context) error {
 	id := c.Param("id")
 	var payload entity.UpdateBookRequest
@@ -108,6 +148,16 @@ func (bs *BookService) UpdateBook(c echo.Context) error {
 	})
 }
 
+// @Summary Delete a book
+// @Description Delete a book
+// @Tags books
+// @ID delete-book
+// @Accept json
+// @Produce json
+// @Param id path string true "Book ID"
+// @Success 200 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /books/{id} [delete]
 func (bs *BookService) DeleteBook(c echo.Context) error {
 	id := c.Param("id")
 	req := &pb.GetBookByIdRequest{
@@ -127,6 +177,18 @@ func (bs *BookService) DeleteBook(c echo.Context) error {
 	})
 }
 
+// @Summary Borrow a book
+// @Description Borrow a book
+// @Tags books
+// @ID borrow-book
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param id path string true "Book ID"
+// @Param borrow_date body entity.BorrowBookRequest true "Borrow data"
+// @Success 200 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /books/{id}/borrow [post]
 func (bs *BookService) BorrowBook(c echo.Context) error {
 	var payload entity.BorrowBookRequest
 	bookId := c.Param("id")
@@ -162,6 +224,18 @@ func (bs *BookService) BorrowBook(c echo.Context) error {
 	})
 }
 
+// @Summary Return a book
+// @Description Return a book
+// @Tags books
+// @ID return-book
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param id path string true "Book ID"
+// @Param return_date body entity.ReturnBookRequest true "Return data"
+// @Success 200 {object} entity.ResponseOK
+// @Failure 400 {object} entity.ResponseError
+// @Router /books/{id}/return [post]
 func (bs *BookService) ReturnBook(c echo.Context) error {
 	var payload entity.ReturnBookRequest
 	bookId := c.Param("id")
