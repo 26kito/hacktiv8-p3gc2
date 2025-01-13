@@ -105,7 +105,6 @@ func (bs *BookService) BorrowBook(ctx context.Context, req *pb.BorrowBookRequest
 
 	payload := entity.BorrowBookRequest{
 		BookID:     req.BookId,
-		UserID:     userId,
 		BorrowDate: req.BorrowDate,
 	}
 
@@ -113,7 +112,7 @@ func (bs *BookService) BorrowBook(ctx context.Context, req *pb.BorrowBookRequest
 		return nil, status.Error(400, err.Error())
 	}
 
-	res, err := bs.BookRepository.BorrowBook(payload)
+	res, err := bs.BookRepository.BorrowBook(userId, payload)
 	if err != nil {
 		return nil, status.Error(500, err.Error())
 	}
@@ -122,12 +121,14 @@ func (bs *BookService) BorrowBook(ctx context.Context, req *pb.BorrowBookRequest
 }
 
 func (bs *BookService) ReturnBook(ctx context.Context, req *pb.ReturnBookRequest) (*pb.Empty, error) {
+	userId := ctx.Value("user").(jwt.MapClaims)["user_id"].(string)
+
 	payload := entity.ReturnBookRequest{
-		ID:         req.Id,
+		BookID:     req.BookId,
 		ReturnDate: req.ReturnDate,
 	}
 
-	err := bs.BookRepository.ReturnBook(payload)
+	err := bs.BookRepository.ReturnBook(userId, payload)
 	if err != nil {
 		return nil, status.Error(500, err.Error())
 	}
@@ -138,10 +139,6 @@ func (bs *BookService) ReturnBook(ctx context.Context, req *pb.ReturnBookRequest
 func validateBorrowBookPayload(payload *pb.BorrowBookRequest) error {
 	if payload.BookId == "" {
 		return fmt.Errorf("book_id is required")
-	}
-
-	if payload.UserId == "" {
-		return fmt.Errorf("user_id is required")
 	}
 
 	if payload.BorrowDate == "" {

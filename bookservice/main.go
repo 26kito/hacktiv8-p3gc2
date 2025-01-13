@@ -28,6 +28,7 @@ func UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServ
 	// Define protected routes
 	protectedRoutes := map[string]bool{
 		"/bookservice.BookService/BorrowBook": true,
+		"/bookservice.BookService/ReturnBook": true,
 	}
 
 	// Check if the route requires authentication
@@ -65,7 +66,6 @@ func UnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServ
 	claims := token.Claims.(jwt.MapClaims)
 	ctx = context.WithValue(ctx, "user", claims)
 
-	log.Println(claims)
 	// Proceed with the handler
 	return handler(ctx, req)
 }

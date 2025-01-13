@@ -62,8 +62,7 @@ message UpdateBookResponse {
 
 message BorrowBookRequest {
     string book_id = 1;
-    string user_id = 2;
-    string borrow_date = 3;
+    string borrow_date = 2;
 }
 
 message BorrowBookResponse {
@@ -71,7 +70,7 @@ message BorrowBookResponse {
 }
 
 message ReturnBookRequest {
-    string id = 1;
+    string book_id = 1;
     string return_date = 2;
 }
 
