@@ -13,6 +13,7 @@ type BookRepository interface {
 	GetAllBook() ([]entity.Book, error)
 	InsertBook(payload entity.InsertBookRequest) (*entity.Book, error)
 	GetBookById(id string) (*entity.Book, error)
+	UpdateBook(payload entity.UpdateBookRequest) (*entity.Book, error)
 }
 
 type bookRepository struct {
@@ -80,4 +81,34 @@ func (br *bookRepository) GetBookById(id string) (*entity.Book, error) {
 	}
 
 	return &book, nil
+}
+
+func (br *bookRepository) UpdateBook(payload entity.UpdateBookRequest) (*entity.Book, error) {
+	objID, err := primitive.ObjectIDFromHex(payload.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"title":          payload.Title,
+			"author":         payload.Author,
+			"published_date": payload.PublishedDate,
+			"status":         payload.Status,
+		},
+	}
+
+	_, err = br.collection.UpdateOne(context.Background(), bson.M{"_id": objID}, update)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &entity.Book{
+		ID:            objID,
+		Title:         payload.Title,
+		Author:        payload.Author,
+		PublishedDate: payload.PublishedDate,
+		Status:        payload.Status,
+	}, nil
 }

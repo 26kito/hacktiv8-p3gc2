@@ -7,6 +7,7 @@ service BookService {
     rpc InsertBook(InsertBookRequest) returns (InsertBookResponse);
     rpc GetAllBook(Empty) returns (GetAllBookResponse);
     rpc GetBookById(GetBookByIdRequest) returns (GetBookResponse);
+    rpc UpdateBook(UpdateBookRequest) returns (UpdateBookResponse);
 }
 
 message Book {
@@ -41,6 +42,18 @@ message InsertBookResponse {
 }
 
 message GetBookByIdRequest {
+    string id = 1;
+}
+
+message UpdateBookRequest {
+    string id = 1;
+    string title = 2;
+    string author = 3;
+    string published_date = 4;
+    string status = 5;
+}
+
+message UpdateBookResponse {
     string id = 1;
 }
 

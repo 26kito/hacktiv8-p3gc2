@@ -67,3 +67,20 @@ func (bs *BookService) GetBookById(ctx context.Context, req *pb.GetBookByIdReque
 		Status:        book.Status,
 	}}, nil
 }
+
+func (bs *BookService) UpdateBook(ctx context.Context, req *pb.UpdateBookRequest) (*pb.UpdateBookResponse, error) {
+	payload := entity.UpdateBookRequest{
+		ID:            req.Id,
+		Title:         req.Title,
+		Author:        req.Author,
+		PublishedDate: req.PublishedDate,
+		Status:        req.Status,
+	}
+
+	res, err := bs.BookRepository.UpdateBook(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.UpdateBookResponse{Id: res.ID.Hex()}, nil
+}
