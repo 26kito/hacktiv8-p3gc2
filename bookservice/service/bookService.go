@@ -84,3 +84,12 @@ func (bs *BookService) UpdateBook(ctx context.Context, req *pb.UpdateBookRequest
 
 	return &pb.UpdateBookResponse{Id: res.ID.Hex()}, nil
 }
+
+func (bs *BookService) DeleteBook(ctx context.Context, req *pb.GetBookByIdRequest) (*pb.Empty, error) {
+	err := bs.BookRepository.DeleteBook(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.Empty{}, nil
+}

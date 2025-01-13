@@ -14,6 +14,7 @@ type BookRepository interface {
 	InsertBook(payload entity.InsertBookRequest) (*entity.Book, error)
 	GetBookById(id string) (*entity.Book, error)
 	UpdateBook(payload entity.UpdateBookRequest) (*entity.Book, error)
+	DeleteBook(id string) error
 }
 
 type bookRepository struct {
@@ -111,4 +112,19 @@ func (br *bookRepository) UpdateBook(payload entity.UpdateBookRequest) (*entity.
 		PublishedDate: payload.PublishedDate,
 		Status:        payload.Status,
 	}, nil
+}
+
+func (br *bookRepository) DeleteBook(id string) error {
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	_, err = br.collection.DeleteOne(context.Background(), bson.M{"_id": objID})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

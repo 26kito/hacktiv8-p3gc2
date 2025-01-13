@@ -8,6 +8,7 @@ service BookService {
     rpc GetAllBook(Empty) returns (GetAllBookResponse);
     rpc GetBookById(GetBookByIdRequest) returns (GetBookResponse);
     rpc UpdateBook(UpdateBookRequest) returns (UpdateBookResponse);
+    rpc DeleteBook(GetBookByIdRequest) returns (Empty);
 }
 
 message Book {
