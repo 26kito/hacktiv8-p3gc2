@@ -105,3 +105,22 @@ func (bs *BookService) UpdateBook(c echo.Context) error {
 		Data:    nil,
 	})
 }
+
+func (bs *BookService) DeleteBook(c echo.Context) error {
+	id := c.Param("id")
+	req := &pb.GetBookByIdRequest{
+		Id: id,
+	}
+
+	_, err := bs.BookClient.DeleteBook(context.Background(), req)
+	if err != nil {
+		return c.JSON(400, entity.ResponseError{
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(200, entity.ResponseOK{
+		Message: "Book deleted successfully",
+		Data:    nil,
+	})
+}
